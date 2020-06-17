@@ -1,0 +1,24 @@
+{
+  "name": "json-schemas",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/askirmas/json-schemas.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/askirmas/json-schemas/issues"
+  },
+  "homepage": "https://github.com/askirmas/json-schemas#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^3.3.0",
+    "stylelint": "^13.6.1"
+  },
+  "dependencies": {}
+}
