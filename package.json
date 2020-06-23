@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "description": "",
   "scripts": {
-    "mdn-yari:build": "cd source/mdn-yari && node content build -l en-us -f web/css"
+    "mdn-yari.build": "cd source/mdn-yari && node content build -l en-us -f web/css",
+    "build:css": "ts-node -T scripts/css_props.ts > build/css/props.json && ts-node -T scripts/css_terms.ts > build/css/terms.json"
   },
   "repository": {
     "type": "git",
@@ -16,8 +17,11 @@
   },
   "homepage": "https://github.com/askirmas/json-schemas#readme",
   "devDependencies": {
+    "@types/node": "^14.0.13",
     "@typescript-eslint/eslint-plugin": "^3.3.0",
-    "stylelint": "^13.6.1"
+    "stylelint": "^13.6.1",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.5"
   },
   "dependencies": {}
 }
