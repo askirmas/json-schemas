@@ -1,12 +1,9 @@
 import data from "../docs/mdn-yari-css/reference/index.json"
-import properties from "../build/css/props.json"
 
-
-const propsSet = new Set(properties)
-, str =  data.doc.body[2].value.content
+const str =  data.doc.body[2].value.content
 , parser = /<code>([^<]*)<\/code>/g
 , pattern = {
-  "units": /^[a-z\-]+$/,
+  "props_units": /^[a-z\-]+$/,
   "function": /^[a-z\-]+(X|Y|Z|3d)?\(\)$/,
   "term": /^\<[^>]+\>$/,
   "pseudoSelector": /^:[^:]/,
@@ -33,8 +30,6 @@ const propsSet = new Set(properties)
 )
 
 terms: for (const term of parsed) {
-  if (propsSet.has(term))
-    continue
   for (const kind in pattern) {
     if (term.match(pattern[kind as keyof typeof pattern])) {
       kinds[kind].push(term)

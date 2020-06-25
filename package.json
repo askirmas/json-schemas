@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "mdn-yari.build": "cd source/mdn-yari && node content build -l en-us -f web/css",
-    "build:css": "ts-node -T scripts/css_props.ts > build/css/props.json && ts-node -T scripts/css_terms.ts > build/css/terms.json"
+    "css/terms.extract": "ts-node -T scripts/css_terms.ts > build/css/terms.json",
+    "css/props.analyze": "ts-node -T scripts/css_props_analayze.ts > build/css/props_analyzed.json"
   },
   "repository": {
     "type": "git",
