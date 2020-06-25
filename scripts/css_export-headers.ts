@@ -1,8 +1,30 @@
 import {sync} from "globby"
 import {readFileSync} from "fs"
+type PPick<T,K extends keyof T> = Partial<Pick<T,K>>
+type RS<K extends string = string, V = string> = Record<K, V>
+type DocCompatibility = {
+  "id": "Browser_compatibility",
+  "query": string,
+  "data"?: {
+    "__compat": RS<string, never>
+  }
+} 
+type DocSyntax = {
+  "id": "Syntax"
+  "content": string    
+}
+type DocSection = DocSyntax | DocCompatibility
 
-type Description = Record<"title"|"summary"|"mdn_url", string>
+type Description = RS<"title"|"summary"|"mdn_url"> & {
+  body: {value: DocSection}[]
+}
 type DocIndex = {doc: Description}
+type Extracted = Pick<Description, "title"|"summary"|"mdn_url">
+& PPick<DocCompatibility, "query">
+& Partial<{
+  "compatibility": NonNullable<DocCompatibility["data"]>["__compat"]
+  "formal": DocSyntax["content"]
+}>
 
 const {parse: $parse, stringify: $stringify} = JSON
 , docsFolder = "docs/mdn-yari-css"
@@ -14,7 +36,11 @@ const {parse: $parse, stringify: $stringify} = JSON
   "_colon_": ":",
   "_doublecolon": "::"
 })
-, $return: Record<string, Description> = {}
+, topicMap = {
+  "Browser_compatibility": "compatibility",
+  "Syntax": "formal"
+} as const
+, $return: Record<string, Extracted> = {}
 
 for (let i = 0; i < length; i++) {
   const fileName = files[i]
@@ -23,14 +49,35 @@ for (let i = 0; i < length; i++) {
     fileName.replace(file2search, '')
   )
   , {doc: {
-    title, summary, mdn_url
-  }} = readJson(`${docsFolder}/${fileName}`) as DocIndex
+    title, summary, mdn_url,
+    body
+  }} = readJson<DocIndex>(`${docsFolder}/${fileName}`)
+  , out: Extracted = {title, summary, mdn_url}
 
-  $return[name] = {title, summary, mdn_url}
+  for (const {value} of body) {
+    const key = topicMap[value.id]
+    if (key === undefined)
+      continue
+    if (out[key]) {
+      console.error(`${fileName}: "${key} already presented"`)
+      continue
+    }
+    switch (value.id) {
+      case "Syntax":
+        out[topicMap[value.id]] = value.content.replace(/^.*>Formal syntax<\/h3>(\n|\\n)*/m, '')
+        break;
+      case "Browser_compatibility":
+        out[topicMap[value.id]] = value.data?.__compat
+        break
+    }
+    
+  }
+    
+  $return[name] = out
 }
 
 console.log($stringify($return, null, 2))
 
-function readJson(path: string) {
-  return $parse(readFileSync(path).toString())
+function readJson<T>(path: string) {
+  return $parse(readFileSync(path).toString()) as T
 }
