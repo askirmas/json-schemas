@@ -1,6 +1,6 @@
 import {sync} from "globby"
 import {readFileSync} from "fs"
-type PPick<T,K extends keyof T> = Partial<Pick<T,K>>
+
 type RS<K extends string = string, V = string> = Record<K, V>
 type DocCompatibility = {
   "id": "Browser_compatibility",
@@ -20,10 +20,10 @@ type Description = RS<"title"|"summary"|"mdn_url"> & {
 }
 type DocIndex = {doc: Description}
 type Extracted = Pick<Description, "title"|"summary"|"mdn_url">
-& PPick<DocCompatibility, "query">
 & Partial<{
   "compatibility": NonNullable<DocCompatibility["data"]>["__compat"]
   "formal": DocSyntax["content"]
+  "query": string[]
 }>
 
 const {parse: $parse, stringify: $stringify} = JSON
@@ -40,7 +40,9 @@ const {parse: $parse, stringify: $stringify} = JSON
   "Browser_compatibility": "compatibility",
   "Syntax": "formal"
 } as const
-, $return: Record<string, Extracted> = {}
+, $return: RS<string, RS<string, Extracted>> = {
+  "etc": {}
+}
 
 for (let i = 0; i < length; i++) {
   const fileName = files[i]
@@ -74,17 +76,27 @@ for (let i = 0; i < length; i++) {
       case "Browser_compatibility":
         const {query} = value
         out[topicMap[value.id]] = value.data?.__compat
-        out.query = query
-        if (query && query !== "api.MediaQueryList") {
-          const chunk = query.split('.')[1]
-          if (!(query.startsWith('css.') && ['properties', 'types', 'at-rules', 'selectors'].includes(chunk)))
-            throw new Error(`${fileName} - unknown query "${query}"`)
-        }
+        if (query)
+          out.query = query.split(".")
         break
     } 
   }
-    
-  $return[name] = out
+
+  const {query} = out
+  if (!(query && query.length))
+    $return.etc[name] = out
+  else {
+    const [subj, categ] = query
+    , subject = $return[subj] || {}
+
+    query.splice(0, 2)
+    if (query.length === 1)
+      //@ts-ignore
+      out.query = query[0]
+    //@ts-ignore
+    subject[categ] = Object.assign(subject[categ] || {}, {[name]: out})
+    $return[subj] = subject
+  }
 }
 
 console.log($stringify($return, null, 2))
