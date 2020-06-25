@@ -64,7 +64,12 @@ for (let i = 0; i < length; i++) {
     }
     switch (value.id) {
       case "Syntax":
-        out[topicMap[value.id]] = value.content.replace(/^.*>Formal syntax<\/h3>(\n|\\n)*/m, '')
+        out[topicMap[value.id]] = value.content
+        .replace(/\s*(^.*>Formal syntax<\/h3>|\s+style="[^"]+")\s*/mg, '')
+        .replace(/<a [^>]*>\|<\/a>/mg, '|')
+        .replace(/(\n|\\n)+/mg, " ")
+        .replace(/\s{2,}/mg, " ")
+        .replace(/>\s+</, "><")
         break;
       case "Browser_compatibility":
         out[topicMap[value.id]] = value.data?.__compat
