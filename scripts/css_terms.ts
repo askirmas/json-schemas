@@ -40,3 +40,5 @@ terms: for (const term of parsed) {
 }
 
 console.log(JSON.stringify(kinds, null, 2))
+
+//TODO Extract <h3 id=\"Combinators\">Combinators</h3>
