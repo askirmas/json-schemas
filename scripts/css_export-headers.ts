@@ -47,7 +47,7 @@ const {parse: $parse, stringify: $stringify} = JSON
 for (let i = 0; i < length; i++) {
   const fileName = files[i]
   , name = replaces.reduce(
-    (acc, [from, to]) => acc.replace(from, to),
+    (acc: string, [from, to]) => acc.replace(from, to),
     fileName.replace(file2search, '')
   )
   , {doc: {
@@ -83,19 +83,39 @@ for (let i = 0; i < length; i++) {
   }
 
   const {query} = out
-  if (!(query && query.length))
+  if (!(query && length))
     $return.etc[name] = out
   else {
     const [subj, categ] = query
     , subject = $return[subj] || {}
 
     query.splice(0, 2)
-    if (query.length === 1)
-      //@ts-ignore
-      out.query = query[0]
-    //@ts-ignore
+    const {length} = query
     subject[categ] = Object.assign(subject[categ] || {}, {[name]: out})
     $return[subj] = subject
+
+    switch (categ) {
+      case "properties":
+        if (
+          name.startsWith("layout_cookbook/")
+          || ["css_motion_path", "cssom_view"].includes(name)
+          || (query[0] === "display" && length <= 2)
+          || (query[0] === "custom-property" && length === 1)
+          || (query[0] === "animation" && length === 1)
+        )
+          break
+
+        if (length > 2)
+          throw new Error(`${name} is too long @ "${query}"`)
+        if (query[length - 1] !== name.replace(/\/.*$/, ''))
+          throw new Error(`${name} not in "${query}"`)
+
+        break
+    }
+
+    if (query.length === 1)
+      //@ts-ignore
+      out.query = query[0]    
   }
 }
 
