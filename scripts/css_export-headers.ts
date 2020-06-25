@@ -56,13 +56,13 @@ for (let i = 0; i < length; i++) {
 
   for (const {value} of body) {
     const key = topicMap[value.id]
+
     if (key === undefined)
       continue
-    if (out[key]) {
+    else if (out[key]) {
       console.error(`${fileName}: "${key} already presented"`)
       continue
-    }
-    switch (value.id) {
+    } else switch (value.id) {
       case "Syntax":
         out[topicMap[value.id]] = value.content
         .replace(/\s*(^.*>Formal syntax<\/h3>|\s+style="[^"]+")\s*/mg, '')
@@ -73,9 +73,9 @@ for (let i = 0; i < length; i++) {
         break;
       case "Browser_compatibility":
         out[topicMap[value.id]] = value.data?.__compat
+        out.query = value.query
         break
-    }
-    
+    } 
   }
     
   $return[name] = out
