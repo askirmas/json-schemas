@@ -72,8 +72,14 @@ for (let i = 0; i < length; i++) {
         .replace(/>\s+</, "><")
         break;
       case "Browser_compatibility":
+        const {query} = value
         out[topicMap[value.id]] = value.data?.__compat
-        out.query = value.query
+        out.query = query
+        if (query && query !== "api.MediaQueryList") {
+          const chunk = query.split('.')[1]
+          if (!(query.startsWith('css.') && ['properties', 'types', 'at-rules', 'selectors'].includes(chunk)))
+            throw new Error(`${fileName} - unknown query "${query}"`)
+        }
         break
     } 
   }
