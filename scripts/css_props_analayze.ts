@@ -1,7 +1,6 @@
 import {props_units as properties} from "../build/css/terms.json"
-
-type S = Set<string>
-type R<X = S> = Record<string, X>
+import { R, S } from "../definitions"
+import { weighting } from "../utils/weightings"
 
 const props = new Set(properties)
 , usage: R = {}
@@ -12,7 +11,6 @@ const props = new Set(properties)
 , positions: R = {}
 , positioned: R = {}
 , positionAreas: R = {}
-, weightsForward: S[] = [new Set()]
 , befores: R = {}
 , afters: R = {}
 
@@ -78,41 +76,30 @@ for (const term in positioned) {
   positionAreas[poses] = (positionAreas[poses] ?? new Set()).add(term)
 }
 
+const used = new Set(Object.keys(usage))
+, weightsForward = weighting(used, afters, befores)
+, weightsBackward = weighting(used, befores, afters)
 
-// Weights
-const stack: S = new Set(Object.keys(usage))
-, done: S = new Set()
-for (const term in afters)
-  if (term in usage)
-    if (!(term in befores)) {
-      weightsForward[0].add(term)
-      done.add(term)
-      stack.delete(term)
-    }
+weightsBackward.reverse()
+// , weights: S[] = []
 
-weighting: while (stack.size > 0) {
-  const next: S = new Set()
-  for (const term of stack) {
-    if (
-      [...befores[term]].every(before =>
-        !(before in usage)
-        || done.has(before)
-      )
-    ) {
-      next.add(term)
-      stack.delete(term)
-    }
-  }
+// let fi = 0, bi = 0
+// while (true) {
+//   const fronts = weightsForward[fi]
+//   , backs = weightsBackward[bi] 
+//   , stats: [S, S, S] = [new Set(), new Set(), new Set()]
 
-  if (next.size === 0) {
-    weightsForward.push(stack)
-    break weighting;
-  }
-  weightsForward.push(next)
-  next.forEach(t => done.add(t))
-}
+//   for (const term of [...fronts, ...backs]) {
+//     stats[
+//       -1
+//       + (fronts.has(term) ? 1 : 0)
+//       + (backs.has(term) ? 2 : 0)
+//     ].add(term)
+//   }
 
-
+//   console.log(stats)
+//   process.exit()
+// }
 
 // for (const term in siblings) {
 //   const area = [...siblings[term]]
@@ -124,7 +111,8 @@ weighting: while (stack.size > 0) {
 
 
 console.log(JSON.stringify({
-  weights: weightsForward,
+  weightsForward,
+  weightsBackward,
   // positionStats: Object.entries(positionAreas)
   // .sort(([k1], [k2]) => k1 === k2 ? 0 : k1 > k2 ? 1 : -1),
   singles,
@@ -136,4 +124,4 @@ console.log(JSON.stringify({
   positioned,
   positionAreas
 
-}, (_, v) => v instanceof Set ? [...v] : v, 2))
+}, (_, v) => v instanceof Set ? [...v].sort() : v, 2))

@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "",
   "scripts": {
+    "test": "jest --config jest.config.json",
     "mdn-yari.build": "cd source/mdn-yari && node content build -l en-us -f web/css",
     "css/terms.extract": "ts-node -T scripts/css_terms.ts > build/css/terms.json",
     "css/props.analyze": "ts-node -T scripts/css_props_analayze.ts > build/css/props_analyzed.json",
@@ -20,10 +21,13 @@
   "homepage": "https://github.com/askirmas/json-schemas#readme",
   "devDependencies": {
     "@types/globby": "^9.1.0",
+    "@types/jest": "^26.0.3",
     "@types/node": "^14.0.13",
     "@typescript-eslint/eslint-plugin": "^3.3.0",
     "globby": "^11.0.1",
+    "jest": "^26.1.0",
     "stylelint": "^13.6.1",
+    "ts-jest": "^26.1.1",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.5"
   },
