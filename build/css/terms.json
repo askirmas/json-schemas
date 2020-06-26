@@ -393,7 +393,7 @@
     "x",
     "z-index"
   ],
-  "function": [
+  "types/function": [
     "annotation()",
     "attr()",
     "blur()",
@@ -474,7 +474,7 @@
     "url()",
     "var()"
   ],
-  "term": [
+  "types/term": [
     "<an-plus-b>",
     "<angle>",
     "<angle-percentage>",
@@ -513,7 +513,7 @@
     "<transform-function>",
     "<url>"
   ],
-  "pseudoSelector": [
+  "selectors/pseudoClass": [
     ":active",
     ":checked",
     ":default",
@@ -554,7 +554,7 @@
     ":valid",
     ":visited"
   ],
-  "pseudoElement": [
+  "selectors/pseudoElement": [
     "::after (:after)",
     "::backdrop",
     "::before (:before)",
@@ -567,7 +567,7 @@
     "::selection",
     "::slotted"
   ],
-  "directive": [
+  "at-rules": [
     "@annotation",
     "@bottom-center",
     "@character-variant",
@@ -591,7 +591,7 @@
     "@top-center",
     "@viewport"
   ],
-  "directiveProperty": [
+  "at-rules-properties": [
     "additive-symbols (@counter-style)",
     "bleed (@page)",
     "fallback (@counter-style)",
@@ -627,14 +627,14 @@
     "width (@viewport)",
     "zoom (@viewport)"
   ],
-  "customProperty": [
+  "properties/custom": [
     "--*"
   ],
-  "frequencyUnit": [
+  "unit/frequency": [
     "Hz",
     "kHz"
   ],
-  "length-1/4mm": [
+  "unit/length-1/4mm": [
     "Q"
   ]
 }

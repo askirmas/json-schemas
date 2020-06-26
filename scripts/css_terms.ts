@@ -4,15 +4,15 @@ const str =  data.doc.body[2].value.content
 , parser = /<code>([^<]*)<\/code>/g
 , pattern = {
   "props_units": /^[a-z\-]+$/,
-  "function": /^[a-z\-]+(X|Y|Z|3d)?\(\)$/,
-  "term": /^\<[^>]+\>$/,
-  "pseudoSelector": /^:[^:]/,
-  "pseudoElement": /^::/,
-  "directive": /^@/,
-  "directiveProperty": /^.* \(@.*\)$/,
-  "customProperty": /^--/,
-  "frequencyUnit": /^k?Hz$/,
-  "length-1/4mm": /^Q$/
+  "types/function": /^[a-z\-]+(X|Y|Z|3d)?\(\)$/,
+  "types/term": /^\<[^>]+\>$/,
+  "selectors/pseudoClass": /^:[^:]/,
+  "selectors/pseudoElement": /^::/,
+  "at-rules": /^@/,
+  "at-rules-properties": /^.* \(@.*\)$/,
+  "properties/custom": /^--/,
+  "unit/frequency": /^k?Hz$/,
+  "unit/length-1/4mm": /^Q$/
 }
 , kinds = Object.fromEntries(
   ['unknown', ...Object.keys(pattern)]
@@ -42,3 +42,32 @@ terms: for (const term of parsed) {
 console.log(JSON.stringify(kinds, null, 2))
 
 //TODO Extract <h3 id=\"Combinators\">Combinators</h3>
+
+// type DeepDict<T> = {[prop: string]: T | DeepDict<T>}
+// function deepSet<T>(source: DeepDict<T>, trajectory: string[], value: T) {
+//   const {length} = trajectory
+//   let pointer = source
+
+//   for (let i = 0; i < length; i++) {
+//     const key = trajectory[i]
+//     if (!pointer[key]) {
+//       if (i === length - 1)
+//         pointer[key] = value
+//       else {
+//         pointer[key] = {}
+//         pointer = pointer[key] as {}
+//       }
+//     } else {
+//       if (i === length - 1)
+//         throw Error(`Can't rewrite`)
+
+//       const next = pointer[key]
+//       if (next === null || typeof next !== "object" )
+//         throw Error(`Not object`)
+      
+//       pointer = next as typeof source
+//     }
+//   }
+
+//   return source
+// }
