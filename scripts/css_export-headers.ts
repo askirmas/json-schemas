@@ -34,7 +34,7 @@ const {parse: $parse, stringify: $stringify} = JSON
 , replaces = Object.entries({
   "_star_": "*",
   "_colon_": ":",
-  "_doublecolon": "::"
+  "_doublecolon_": "::"
 })
 , topicMap = {
   "Browser_compatibility": "compatibility",
